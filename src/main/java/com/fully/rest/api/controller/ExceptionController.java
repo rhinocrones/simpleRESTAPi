@@ -49,7 +49,7 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
       DataIntegrityViolationException.class})
   public ResponseEntity<Object> handleBadRequest(
       Exception ex, WebRequest request) {
-    return handleExceptionInternal(ex, ex.getLocalizedMessage(),
+    return handleExceptionInternal(ex, "You have some issue with request body",
         new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
   }
 }

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-//TODO add cache, HATEOAS, Swagger 2.0, Client
+//TODO HATEOAS, Swagger 2.0, Client
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/v1/socials/{socialId}/posts")

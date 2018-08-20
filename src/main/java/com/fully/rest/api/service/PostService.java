@@ -8,7 +8,7 @@ public interface PostService {
 
   Post findById(Long socialId, Long id);
 
-  List<Post> findBySocialId(Long id);
+  List<Post> findBySocialId(Long socialId);
 
   Post save(Post post, Long socialId);
 

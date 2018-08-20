@@ -10,6 +10,10 @@ import com.fully.rest.api.repository.SocialRepository;
 import com.fully.rest.api.service.PostService;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -21,26 +25,37 @@ public class PostServiceImpl implements PostService {
 
   private SocialRepository socialRepository;
 
+
   @Override
+  @Cacheable(cacheNames = "allForOneSocial", key = "#socialId")
+  public List<Post> findBySocialId(Long socialId) {
+    System.out.println("findBySocialId");
+    return postRepository.findBySocialId(socialId);
+  }
+
+  @Override
+  @Cacheable(value = "posts", key = "{ #socialId, #id}")
   public Post findById(Long socialId, Long id) {
     if (!socialRepository.existsById(socialId)) {
       throw new SocialNotFoundException();
     }
+    System.out.println("findById");
     return postRepository.findBySocialIdAndId(socialId, id).orElseThrow(PostNotFoundException::new);
   }
 
   @Override
-  public List<Post> findBySocialId(Long id) {
-    return postRepository.findBySocialId(id);
-  }
-
-  @Override
+  @Caching(evict = {
+      @CacheEvict(cacheNames = "allForOneSocial", key = "#socialId", beforeInvocation = true),
+      @CacheEvict(cacheNames = "posts", allEntries = true, beforeInvocation = true)})
   public Post save(Post post, Long socialId) {
+    System.out.println("save");
     return socialRepository.findById(socialId).map(e -> processSave(e, post))
         .orElseThrow(SocialNotFoundException::new);
   }
 
   @Override
+  @Caching(evict = @CacheEvict(cacheNames = "allForOneSocial", key = "#socialId", beforeInvocation = true),
+      put = @CachePut(cacheNames = "posts", key = "{ #socialId, #id}"))
   public Post update(Post post, Long socialId, Long id) {
     if (post.getId() == null || !post.getId().equals(id)) {
       throw new PostIdMismatchException();
@@ -48,15 +63,20 @@ public class PostServiceImpl implements PostService {
     if (!socialRepository.existsById(socialId)) {
       throw new SocialNotFoundException();
     }
+    System.out.println("update");
     return postRepository.findById(id).map(e -> processUpdate(e, post))
         .orElseThrow(PostNotFoundException::new);
   }
 
   @Override
+  @Caching(evict = {
+      @CacheEvict(cacheNames = "allForOneSocial", key = "#socialId", beforeInvocation = true),
+      @CacheEvict(cacheNames = "posts", key = "{ #socialId, #id}", beforeInvocation = true)})
   public ResponseEntity<Void> delete(Long socialId, Long id) {
     if (!socialRepository.existsById(socialId)) {
       throw new SocialNotFoundException();
     }
+    System.out.println("delete");
     return postRepository.findById(id).map(e -> processDelete(id))
         .orElseThrow(PostNotFoundException::new);
   }
