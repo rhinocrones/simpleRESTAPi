@@ -14,5 +14,5 @@ public interface PostService {
 
   Post update(Post post, Long socialId, Long id);
 
-  ResponseEntity<Void> delete(Long socialId, Long id);
+  void delete(Long socialId, Long id);
 }

@@ -29,7 +29,6 @@ public class PostServiceImpl implements PostService {
   @Override
   @Cacheable(cacheNames = "allForOneSocial", key = "#socialId")
   public List<Post> findBySocialId(Long socialId) {
-    System.out.println("findBySocialId");
     return postRepository.findBySocialId(socialId);
   }
 
@@ -39,7 +38,6 @@ public class PostServiceImpl implements PostService {
     if (!socialRepository.existsById(socialId)) {
       throw new SocialNotFoundException();
     }
-    System.out.println("findById");
     return postRepository.findBySocialIdAndId(socialId, id).orElseThrow(PostNotFoundException::new);
   }
 
@@ -48,7 +46,6 @@ public class PostServiceImpl implements PostService {
       @CacheEvict(cacheNames = "allForOneSocial", key = "#socialId", beforeInvocation = true),
       @CacheEvict(cacheNames = "posts", allEntries = true, beforeInvocation = true)})
   public Post save(Post post, Long socialId) {
-    System.out.println("save");
     return socialRepository.findById(socialId).map(e -> processSave(e, post))
         .orElseThrow(SocialNotFoundException::new);
   }
@@ -63,7 +60,6 @@ public class PostServiceImpl implements PostService {
     if (!socialRepository.existsById(socialId)) {
       throw new SocialNotFoundException();
     }
-    System.out.println("update");
     return postRepository.findById(id).map(e -> processUpdate(e, post))
         .orElseThrow(PostNotFoundException::new);
   }
@@ -72,12 +68,11 @@ public class PostServiceImpl implements PostService {
   @Caching(evict = {
       @CacheEvict(cacheNames = "allForOneSocial", key = "#socialId", beforeInvocation = true),
       @CacheEvict(cacheNames = "posts", key = "{ #socialId, #id}", beforeInvocation = true)})
-  public ResponseEntity<Void> delete(Long socialId, Long id) {
+  public void delete(Long socialId, Long id) {
     if (!socialRepository.existsById(socialId)) {
       throw new SocialNotFoundException();
     }
-    System.out.println("delete");
-    return postRepository.findById(id).map(e -> processDelete(id))
+    postRepository.findById(id).map(e -> processDelete(id))
         .orElseThrow(PostNotFoundException::new);
   }
 

@@ -55,8 +55,8 @@ public class SocialServiceImpl implements SocialService {
   @Caching(evict = {
       @CacheEvict(cacheNames = "allSocials", allEntries = true, beforeInvocation = true),
       @CacheEvict(cacheNames = "socials", key = "#id", beforeInvocation = true)})
-  public ResponseEntity<Void> delete(Long id) {
-    return socialRepository.findById(id).map(e -> processDelete(id))
+  public void delete(Long id) {
+    socialRepository.findById(id).map(e -> processDelete(id))
         .orElseThrow(SocialIdMismatchException::new);
   }
 

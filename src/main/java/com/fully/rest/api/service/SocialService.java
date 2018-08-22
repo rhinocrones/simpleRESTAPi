@@ -14,5 +14,5 @@ public interface SocialService {
 
   Social update(Social social, Long id);
 
-  ResponseEntity<Void> delete(Long id);
+  void delete(Long id);
 }
