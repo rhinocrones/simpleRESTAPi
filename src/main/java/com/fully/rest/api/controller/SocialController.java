@@ -3,7 +3,6 @@ package com.fully.rest.api.controller;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-import com.fully.rest.api.controller.exception.RootController;
 import com.fully.rest.api.domain.entity.Social;
 import com.fully.rest.api.service.SocialService;
 import com.fully.rest.api.service.resource.SocialResource;
@@ -25,12 +24,11 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 
 @AllArgsConstructor
 @RestController
-@RequestMapping(value = "/socials", produces = MediaTypes.HAL_JSON_VALUE)
 public class SocialController {
 
   private SocialService socialService;
 
-  @GetMapping
+  @GetMapping(value = "/socials", produces = MediaTypes.HAL_JSON_VALUE)
   public ResponseEntity<Resources<SocialResource>> findAll() {
     Resources<SocialResource> socialResources = new Resources<>(
         socialService.findAll().stream().map(SocialResource::new)
@@ -41,25 +39,25 @@ public class SocialController {
     return ResponseEntity.ok(socialResources);
   }
 
-  @GetMapping("/{id}")
+  @GetMapping(value = "/socials/{id}", produces = MediaTypes.HAL_JSON_VALUE)
   public ResponseEntity<SocialResource> findById(@PathVariable Long id) {
     return ResponseEntity.ok(new SocialResource(socialService.findById(id)));
   }
 
-  @PostMapping
+  @PostMapping(value = "/socials", produces = MediaTypes.HAL_JSON_VALUE)
   public ResponseEntity<SocialResource> save(@Valid @RequestBody Social social) {
     Social savedSocial = socialService.save(social);
     return ResponseEntity.created(MvcUriComponentsBuilder.fromController(getClass()).path("/{id}")
         .buildAndExpand(savedSocial.getId()).toUri()).body(new SocialResource(savedSocial));
   }
 
-  @PutMapping("/{id}")
+  @PutMapping(value = "/socials/{id}", produces = MediaTypes.HAL_JSON_VALUE)
   public ResponseEntity<SocialResource> update(@Valid @RequestBody Social social,
       @PathVariable Long id) {
     return ResponseEntity.ok(new SocialResource(socialService.update(social, id)));
   }
 
-  @DeleteMapping("/{id}")
+  @DeleteMapping(value = "/socials/{id}", produces = MediaTypes.HAL_JSON_VALUE)
   public ResponseEntity<Void> delete(@PathVariable Long id) {
     return ResponseEntity.noContent().build();
   }
