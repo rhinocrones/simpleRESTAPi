@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service
-public class  PostServiceImpl implements PostService {
+public class PostServiceImpl implements PostService {
 
   private PostRepository postRepository;
 
@@ -29,7 +29,11 @@ public class  PostServiceImpl implements PostService {
   @Override
   @Cacheable(cacheNames = "allForOneSocial", key = "#socialId")
   public List<Post> findBySocialId(Long socialId) {
-    return postRepository.findBySocialId(socialId);
+    List<Post> posts = postRepository.findBySocialId(socialId);
+    if (posts.isEmpty()) {
+      throw new SocialNotFoundException();
+    }
+    return posts;
   }
 
   @Override
