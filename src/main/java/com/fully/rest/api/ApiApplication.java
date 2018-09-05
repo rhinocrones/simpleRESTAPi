@@ -1,5 +1,7 @@
 package com.fully.rest.api;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;

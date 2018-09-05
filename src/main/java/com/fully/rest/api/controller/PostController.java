@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-//TODO Exceptions, Pageable Swagger 2.0, Client
+//TODO HATEOAS Exceptions, Pageable Swagger 2.0, Client
 @AllArgsConstructor
 @RestController
 public class PostController {

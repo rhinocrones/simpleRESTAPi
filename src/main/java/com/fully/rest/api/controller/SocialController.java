@@ -24,11 +24,12 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 
 @AllArgsConstructor
 @RestController
+@RequestMapping("/socials")
 public class SocialController {
 
   private SocialService socialService;
 
-  @GetMapping(value = "/socials", produces = MediaTypes.HAL_JSON_VALUE)
+  @GetMapping(produces = MediaTypes.HAL_JSON_VALUE)
   public ResponseEntity<Resources<SocialResource>> findAll() {
     Resources<SocialResource> socialResources = new Resources<>(
         socialService.findAll().stream().map(SocialResource::new)
@@ -39,26 +40,27 @@ public class SocialController {
     return ResponseEntity.ok(socialResources);
   }
 
-  @GetMapping(value = "/socials/{id}", produces = MediaTypes.HAL_JSON_VALUE)
+  @GetMapping(value = "/{id}", produces = MediaTypes.HAL_JSON_VALUE)
   public ResponseEntity<SocialResource> findById(@PathVariable Long id) {
     return ResponseEntity.ok(new SocialResource(socialService.findById(id)));
   }
 
-  @PostMapping(value = "/socials", produces = MediaTypes.HAL_JSON_VALUE)
+  @PostMapping(produces = MediaTypes.HAL_JSON_VALUE)
   public ResponseEntity<SocialResource> save(@Valid @RequestBody Social social) {
     Social savedSocial = socialService.save(social);
     return ResponseEntity.created(MvcUriComponentsBuilder.fromController(getClass()).path("/{id}")
         .buildAndExpand(savedSocial.getId()).toUri()).body(new SocialResource(savedSocial));
   }
 
-  @PutMapping(value = "/socials/{id}", produces = MediaTypes.HAL_JSON_VALUE)
+  @PutMapping(value = "/{id}", produces = MediaTypes.HAL_JSON_VALUE)
   public ResponseEntity<SocialResource> update(@Valid @RequestBody Social social,
       @PathVariable Long id) {
     return ResponseEntity.ok(new SocialResource(socialService.update(social, id)));
   }
 
-  @DeleteMapping(value = "/socials/{id}", produces = MediaTypes.HAL_JSON_VALUE)
+  @DeleteMapping(value = "/{id}", produces = MediaTypes.HAL_JSON_VALUE)
   public ResponseEntity<Void> delete(@PathVariable Long id) {
+    socialService.delete(id);
     return ResponseEntity.noContent().build();
   }
 }

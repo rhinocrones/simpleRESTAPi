@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -28,12 +29,12 @@ public class Social extends AuditModel {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotNull
+  @NotEmpty
   @Size(max = 100)
   @Column(unique = true)
   private String name;
 
-  @NotNull
+  @NotEmpty
   @Lob
   private String description;
 }
